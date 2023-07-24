@@ -72,7 +72,7 @@ const specialPromoData = [
     id: 2,
     img: images.promo_banner,
     title: 'Bonus Cashback2',
-    description: "Don't miss it. Grab it now!",
+    description: '₹ XXXXX get to shop.',
   },
   {
     id: 3,
