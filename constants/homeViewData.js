@@ -66,25 +66,29 @@ const specialPromoData = [
     id: 1,
     img: images.promo_banner,
     title: 'Bonus Cashback1',
-    description: "Don't miss it. Grab it now!",
+    // description: "Don't miss it. Grab it now!",
+    description:
+      'Compound components are a pattern used in React to create components that work together as a group, allowing users to customize and control the rendering of multiple related components.',
   },
   {
     id: 2,
     img: images.promo_banner,
     title: 'Bonus Cashback2',
-    description: '₹ XXXXX get to shop.',
+    description: "Don't miss it. Grab it now!",
   },
   {
     id: 3,
     img: images.promo_banner,
     title: 'Bonus Cashback3',
-    description: "Don't miss it. Grab it now!",
+    description:
+      'Compound components are a pattern used in React to create components that work together as a group, allowing users to customize and control the rendering of multiple related components.',
   },
   {
     id: 4,
     img: images.promo_banner,
     title: 'Bonus Cashback4',
-    description: "Don't miss it. Grab it now!",
+    description:
+      'It allows you to  a parent component that encapsulates the behaviour and state of child components, while still giving flexibility to users to determine the composition and appearance of the child components.',
   },
 ];
 
