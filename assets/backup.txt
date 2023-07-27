@@ -1,0 +1,1061 @@
+import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import React, {useState} from 'react';
+import QRCodeScanner from 'react-native-qrcode-scanner';
+import {RNCamera} from 'react-native-camera';
+import {COLORS, FONTS, SIZES, icons} from '../constants';
+import {useNavigation} from '@react-navigation/native';
+
+export default function Scan() {
+  const pointsTo = useNavigation();
+  const [scanData, setScanData] = useState('');
+  const onSuccess = async e => {
+    try {
+      console.log(e);
+      scanData(e.data);
+    } catch (error) {
+      console.log('Camera ka error: ', error);
+    }
+  };
+  const HeaderScan = () => {
+    return (
+      <>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            backgroundColor: 'rgba(0,0,0,0.3)',
+            width: SIZES.width * 0.9,
+            alignSelf: 'center',
+            margin: SIZES.padding * 3,
+            padding: SIZES.padding,
+            borderRadius: SIZES.radius / 2.5,
+          }}>
+          <TouchableOpacity
+            style={{
+              backgroundColor: 'rgba(0,0,0,0.1)',
+              width: 30,
+              height: 30,
+              justifyContent: 'center',
+              alignItems: 'center',
+              padding: SIZES.padding * 2.5,
+              borderRadius: SIZES.radius / 3,
+            }}
+            onPress={() => {
+              pointsTo.navigate('Home');
+            }}>
+            <Image
+              source={icons.close}
+              style={{tintColor: COLORS.white, width: 15, height: 15}}
+            />
+          </TouchableOpacity>
+          <View
+            style={{
+              // backgroundColor: COLORS.red,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Text
+              style={{
+                color: COLORS.white,
+                ...FONTS.h3,
+              }}>
+              Scan QR
+            </Text>
+          </View>
+          <TouchableOpacity
+            style={{
+              // backgroundColor: COLORS.yellow,
+              backgroundColor: 'rgba(247, 247, 247, 0.1)',
+              width: 30,
+              height: 30,
+              justifyContent: 'center',
+              alignItems: 'center',
+              padding: SIZES.padding * 2.5,
+              borderRadius: SIZES.radius / 3,
+            }}
+            onPress={() => {
+              pointsTo.navigate('Profile');
+            }}>
+            <Image
+              source={icons.info}
+              style={{tintColor: COLORS.white, width: 20, height: 20}}
+            />
+          </TouchableOpacity>
+        </View>
+      </>
+    );
+  };
+  const ScanSection = () => {
+    return (
+      <>
+        <View
+          style={{
+            marginTop: -SIZES.padding * 2,
+            height: SIZES.height * 0.6,
+            // backgroundColor: COLORS.red,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <View
+            style={{
+              width: SIZES.width * 0.65,
+              height: SIZES.height * 0.4,
+              // backgroundColor: COLORS.green,
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderRadius: SIZES.radius / 2.5,
+              borderColor: COLORS.green,
+              borderWidth: 2,
+            }}></View>
+        </View>
+      </>
+    );
+  };
+  const FooterScan = () => {
+    return (
+      <>
+        <View
+          style={{
+            backgroundColor: COLORS.white,
+            borderTopRightRadius: SIZES.radius / 2.5,
+            borderTopLeftRadius: SIZES.radius / 2.5,
+            position: 'absolute',
+            bottom: 0,
+            right: 0,
+            left: 0,
+            maxHeight: SIZES.height * 0.2,
+          }}>
+          <View
+            style={{
+              flexDirection: 'column',
+              width: SIZES.width * 0.9,
+              alignSelf: 'center',
+              paddingVertical: SIZES.padding * 2,
+              gap: 5,
+            }}>
+            <Text style={{color: COLORS.black, ...FONTS.h4}}>
+              Scanned Information
+            </Text>
+            <Text style={{color: COLORS.black, ...FONTS.body4}}>
+              Imagine when we are at a restaurant and forget to bring a wallet.
+              It seems like there are no other helpers besides God and digital
+              wallets.
+            </Text>
+          </View>
+        </View>
+      </>
+    );
+  };
+  return (
+    <View style={{flex: 1, backgroundColor: COLORS.transparent}}>
+      <RNCamera
+        ref={ref => {
+          this.camera = ref;
+        }}
+        style={{flex: 1}}
+        captureAudio={false}
+        type={RNCamera.Constants.Type.back}
+        flashMode={RNCamera.Constants.FlashMode.off}
+        androidCameraPermissionOptions={{
+          title: 'Camera is Required.',
+          message: 'To scan QR, camera permission should be allowed.',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'Okay',
+        }}>
+        <HeaderScan />
+        <ScanSection />
+        <FooterScan />
+      </RNCamera>
+    </View>
+  );
+}
+
+{
+  /* <QRCodeScanner
+  onRead={e => {
+    onSuccess(e);
+  }}
+/>; */
+}
+
+
+// Login Screen
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
+} from 'react-native';
+import {COLORS, SIZES, icons, images} from '../constants';
+import LinearGradient from 'react-native-linear-gradient';
+import {useState} from 'react';
+import {useNavigation} from '@react-navigation/native';
+import TextField from '../components/TextField';
+import WaButton from '../components/WaButton';
+
+export default function Login() {
+  const pointsTo = useNavigation();
+  const [showPassword, setShowPassword] = useState(false);
+
+  // Logo Display
+  const RenderLogo = () => {
+    return (
+      <>
+        <View
+          style={{
+            height: 100,
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginTop: SIZES.padding * 5,
+          }}>
+          <Image
+            source={images.wallie_logo}
+            resizeMode="contain"
+            style={{width: SIZES.width * 0.6}}
+          />
+        </View>
+      </>
+    );
+  };
+  // Login Form
+  const RenderForm = () => {
+    return (
+      <>
+        <View
+          style={{
+            marginTop: SIZES.padding * 3,
+            marginHorizontal: SIZES.padding * 3,
+          }}>
+          {/* Email Input */}
+          <View style={{marginTop: SIZES.padding * 2}}>
+            <TextField
+              label={'Email ID'}
+              placeholder={'Enter Email'}
+              mytitle={'email wala'}
+              maxlength={80}
+            />
+          </View>
+          {/* Phone Input */}
+          <View style={{marginTop: SIZES.padding * 2}}>
+            <TextField
+              label={'Phone Number'}
+              placeholder={'Enter Phone Number'}
+              keyboard={'phone'}
+              mytitle={'phone wala'}
+              maxlength={12}
+            />
+          </View>
+          {/* Password Input */}
+          <View style={{marginTop: SIZES.padding * 2}}>
+            <TextField
+              label={'Password'}
+              placeholder={'Enter Password'}
+              mytitle={'password wala'}
+              maxlength={50}
+              isSecure={showPassword}
+            />
+            <TouchableOpacity
+              onPress={() => setShowPassword(!showPassword)}
+              style={{
+                width: 10,
+                height: 10,
+                position: 'absolute',
+                top: 40,
+                right: 20,
+              }}>
+              <Image
+                source={showPassword ? icons.disable_eye : icons.eye}
+                resizeMode="contain"
+                style={{width: 18, height: 20, tintColor: COLORS.white}}
+              />
+            </TouchableOpacity>
+          </View>
+          {/* login button */}
+          <View style={{marginTop: SIZES.padding * 3}}>
+            <WaButton
+              Display={'Login'}
+              onPress={() => pointsTo.navigate('HomeTabs')}
+            />
+          </View>
+          {/* or */}
+          <View
+            style={{
+              marginTop: SIZES.padding * 3,
+              borderTopColor: COLORS.white,
+              borderTopWidth: 1,
+            }}>
+            <Text style={{textAlign: 'center', marginTop: 5}}>OR</Text>
+          </View>
+          {/* create new account button */}
+          <View style={{marginTop: SIZES.padding}}>
+            <WaButton
+              Display={'Create New Account'}
+              onPress={() => pointsTo.navigate('SignUp')}
+            />
+          </View>
+        </View>
+      </>
+    );
+  };
+
+  return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : null}
+      style={{flex: 1}}>
+      <LinearGradient style={{flex: 1}} colors={[COLORS.lime, COLORS.emerald]}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <RenderLogo />
+          <RenderForm />
+        </ScrollView>
+      </LinearGradient>
+    </KeyboardAvoidingView>
+  );
+}
+
+
+// second: Login.js
+import {
+  View,
+  Text,
+  Image,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
+  StyleSheet,
+} from "react-native";
+import { COLORS, FONTS, SIZES, images } from "../constants";
+import LinearGradient from "react-native-linear-gradient";
+import { useNavigation } from "@react-navigation/native";
+import TextField from "../components/TextField";
+import WaButton from "../components/WaButton";
+import { useState } from "react";
+
+export default function Login() {
+  const pointsTo = useNavigation();
+  const headText = "{ Happy to see you again 🥳 }";
+  const [userInputs, setUserInputs] = useState({
+    email: "",
+    password: "",
+  });
+  const handleOnChange = (text, _input) => {
+    setUserInputs((prevState) => ({ ...prevState, [_input]: text }));
+  };
+  console.log(userInputs);
+  // Logo Display
+  const WaLogo = () => {
+    return (
+      <>
+        <View
+          style={{
+            height: 100,
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: SIZES.padding * 5,
+          }}
+        >
+          <Image
+            source={images.wallie_logo}
+            resizeMode="contain"
+            style={{ width: SIZES.width * 0.6 }}
+          />
+        </View>
+      </>
+    );
+  };
+  // Login Form
+  const WaLoginForm = () => {
+    return (
+      <>
+        <View style={styles.formContaier}>
+          <Text style={styles.formHeading}>{headText}</Text>
+          {/* Form Input Starts */}
+          {/* Email Input */}
+          <TextField
+            label={"Email ID"}
+            placeholder={"Enter Email"}
+            iconName={"email-outline"}
+            onChangeText={(text) => handleOnChange(text, "email")}
+            // error={"hello"}
+          />
+          {/* Password Input */}
+          <TextField
+            label={"Password"}
+            placeholder={"Enter Password"}
+            iconName={"lock-outline"}
+            password
+            // error={"hello"}
+          />
+          {/* Form Input Ends */}
+
+          {/* Button Section Starts */}
+          {/* login button */}
+          <View style={{ marginTop: SIZES.padding * 3 }}>
+            <WaButton
+              displayBtnTitle={"Login"}
+              onPress={() => pointsTo.navigate("HomeTabs")}
+            />
+          </View>
+          {/* or */}
+          <View
+            style={{
+              marginTop: SIZES.padding * 3,
+              borderTopColor: COLORS.white,
+              borderTopWidth: 1,
+            }}
+          >
+            <Text style={{ textAlign: "center", marginTop: 5 }}>OR</Text>
+          </View>
+          {/* create new account button */}
+          <View style={{ marginTop: SIZES.padding }}>
+            <WaButton
+              displayBtnTitle={"Create New Account"}
+              onPress={() => pointsTo.navigate("SignUp")}
+            />
+          </View>
+          {/* Button Section Ends */}
+        </View>
+      </>
+    );
+  };
+
+  // main function return
+  return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : null}
+      style={{ flex: 1 }}
+    >
+      <LinearGradient
+        style={{ flex: 1 }}
+        colors={[COLORS.lime, COLORS.emerald]}
+      >
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <WaLogo />
+          <WaLoginForm />
+        </ScrollView>
+      </LinearGradient>
+    </KeyboardAvoidingView>
+  );
+}
+
+const styles = StyleSheet.create({
+  formContaier: {
+    marginTop: SIZES.padding * 3,
+    marginHorizontal: SIZES.padding * 3,
+  },
+  formHeading: {
+    color: COLORS.white,
+    ...FONTS.h2,
+    alignSelf: "center",
+    marginVertical: SIZES.padding * 2,
+  },
+});
+
+
+// third: Login
+import {
+  View,
+  Text,
+  Image,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
+  StyleSheet,
+} from "react-native";
+import { COLORS, FONTS, SIZES, images } from "../constants";
+import LinearGradient from "react-native-linear-gradient";
+import { useNavigation } from "@react-navigation/native";
+import TextField from "../components/TextField";
+import WaButton from "../components/WaButton";
+import { useState } from "react";
+
+export default function Login() {
+  // main function return
+  return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : null}
+      style={{ flex: 1 }}
+    >
+      <LinearGradient
+        style={{ flex: 1 }}
+        colors={[COLORS.lime, COLORS.emerald]}
+      >
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <WaLogo />
+          <WaLoginForm />
+        </ScrollView>
+      </LinearGradient>
+    </KeyboardAvoidingView>
+  );
+}
+
+// Logo Display
+const WaLogo = () => {
+  return (
+    <>
+      <View
+        style={{
+          height: 100,
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: SIZES.padding * 5,
+        }}
+      >
+        <Image
+          source={images.wallie_logo}
+          resizeMode="contain"
+          style={{ width: SIZES.width * 0.6 }}
+        />
+      </View>
+    </>
+  );
+};
+
+// Login Form
+const WaLoginForm = () => {
+  const pointsTo = useNavigation();
+  const headText = "{ Happy to see you again 🥳 }";
+  const [userInputs, setUserInputs] = useState({
+    email: "",
+    password: "",
+  });
+  const handleOnChange = (text, _input) => {
+    setUserInputs((prevState) => ({ ...prevState, [_input]: text }));
+  };
+  console.log(userInputs);
+  return (
+    <>
+      <View style={styles.formContaier}>
+        <Text style={styles.formHeading}>{headText}</Text>
+        {/* Form Input Starts */}
+        {/* Email Input */}
+        <TextField
+          label={"Email ID"}
+          placeholder={"Enter Email"}
+          iconName={"email-outline"}
+          onChangeText={(text) => handleOnChange(text, "email")}
+          // error={"hello"}
+        />
+        {/* Password Input */}
+        <TextField
+          label={"Password"}
+          placeholder={"Enter Password"}
+          iconName={"lock-outline"}
+          password
+          onChangeText={(text) => handleOnChange(text, "password")}
+          // error={"hello"}
+        />
+        {/* Form Input Ends */}
+
+        {/* Button Section Starts */}
+        {/* login button */}
+        <View style={{ marginTop: SIZES.padding * 3 }}>
+          <WaButton
+            displayBtnTitle={"Login"}
+            onPress={() => pointsTo.navigate("HomeTabs")}
+          />
+        </View>
+        {/* or */}
+        <View
+          style={{
+            marginTop: SIZES.padding * 3,
+            borderTopColor: COLORS.white,
+            borderTopWidth: 1,
+          }}
+        >
+          <Text style={{ textAlign: "center", marginTop: 5 }}>OR</Text>
+        </View>
+        {/* create new account button */}
+        <View style={{ marginTop: SIZES.padding }}>
+          <WaButton
+            displayBtnTitle={"Create New Account"}
+            onPress={() => pointsTo.navigate("SignUp")}
+          />
+        </View>
+        {/* Button Section Ends */}
+      </View>
+    </>
+  );
+};
+
+// Login Page Style
+const styles = StyleSheet.create({
+  formContaier: {
+    marginTop: SIZES.padding * 3,
+    marginHorizontal: SIZES.padding * 3,
+  },
+  formHeading: {
+    color: COLORS.white,
+    ...FONTS.h2,
+    alignSelf: "center",
+    marginVertical: SIZES.padding * 2,
+  },
+});
+
+
+// First time: FormikTest
+import { View, Text, TextInput, Pressable, StyleSheet } from "react-native";
+import React, { useState, useEffect } from "react";
+import { Formik } from "formik";
+import * as Yup from "yup";
+import { COLORS, FONTS, SIZES } from "../constants";
+
+const LoginSchema = Yup.object({
+  firstName: Yup.string()
+    .min(2, "Minimum two letters.")
+    .matches(
+      /^(?!.*(\w)\1\1)[\w\d]+$/,
+      "No letter repeat more than two times please..."
+    )
+    .matches(/^[A-Za-z]{2,40}$/, "Only alphabets allowed.")
+    .required("First name is required."),
+  lastName: Yup.string()
+    .min(2, "Minimum two letters.")
+    .matches(
+      /^(?!.*(\w)\1\1)[\w\d]+$/,
+      "No letter repeat more than two times please..."
+    )
+    .matches(/^[A-Za-z]{2,40}$/, "Only alphabets allowed.")
+    .required("Last name is required."),
+});
+
+export default function FormikTest() {
+  const [userInfo, setUserInfo] = useState({
+    firstName: "",
+    lastName: "",
+  });
+
+  useEffect(() => {
+    console.log("Kam kar raha hai? ", userInfo);
+  }, [userInfo]);
+
+  return (
+    <View style={{ flex: 1 }}>
+      <View style={styles.formContainer}>
+        <Text style={styles.formTitle}>FormikTest</Text>
+        <Formik
+          initialValues={userInfo}
+          validationSchema={LoginSchema}
+          onSubmit={(submittedValues) => {
+            console.log(submittedValues);
+            setUserInfo(submittedValues);
+          }}
+        >
+          {({
+            values,
+            touched,
+            errors,
+            handleSubmit,
+            handleChange,
+            handleBlur,
+            isSubmitting,
+            isValid,
+          }) => {
+            const { firstName, lastName } = values;
+            return (
+              <>
+                <View style={styles.formInputContainer}>
+                  <TextInput
+                    value={firstName}
+                    onChangeText={(text) =>
+                      handleChange("firstName")(text.replace(/[^a-zA-Z]/g, ""))
+                    }
+                    onBlur={handleBlur("firstName")}
+                    autoCapitalize="none"
+                    autoComplete="off"
+                    autoCorrect={false}
+                    style={styles.formInput}
+                    placeholder="Enter First Name"
+                  />
+                  {touched.firstName && errors.firstName && (
+                    <Text style={styles.errorShown}>{errors.firstName}</Text>
+                  )}
+                </View>
+                <View style={styles.formInputContainer}>
+                  <TextInput
+                    value={lastName}
+                    onChangeText={(text) =>
+                      handleChange("lastName")(text.replace(/[^a-zA-Z]/g, ""))
+                    }
+                    onBlur={handleBlur("lastName")}
+                    autoCapitalize="none"
+                    autoComplete="off"
+                    autoCorrect={false}
+                    style={styles.formInput}
+                    placeholder="Enter Last Name"
+                  />
+                  {touched.lastName && errors.lastName && (
+                    <Text style={styles.errorShown}>{errors.lastName}</Text>
+                  )}
+                </View>
+
+                <Pressable
+                  style={[styles.submitBtn, !isValid && { opacity: 0.4 }]}
+                  onPress={handleSubmit}
+                  disabled={!isValid}
+                >
+                  <Text style={styles.submitBtnTitle}>Submit</Text>
+                </Pressable>
+              </>
+            );
+          }}
+        </Formik>
+      </View>
+      <View style={styles.outputContainer}>
+        <Text style={styles.outputText}>
+          {userInfo.firstName + " " + userInfo.lastName}
+        </Text>
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  formContainer: {
+    flex: 60,
+    justifyContent: "center",
+    width: SIZES.width * 0.6,
+    alignSelf: "center",
+  },
+  formTitle: {
+    color: COLORS.purple,
+    ...FONTS.h2,
+    textAlign: "center",
+  },
+  formInputContainer: {
+    marginVertical: SIZES.padding,
+  },
+  formInput: {
+    backgroundColor: COLORS.gray,
+    borderRadius: SIZES.radius / 4,
+    paddingLeft: SIZES.padding,
+  },
+  errorShown: {
+    color: COLORS.red,
+    ...FONTS.body5,
+    marginTop: SIZES.padding / 6,
+    lineHeight: 15,
+  },
+  submitBtn: {
+    backgroundColor: COLORS.primary,
+    padding: SIZES.padding / 2,
+    borderRadius: SIZES.radius / 4,
+  },
+  submitBtnTitle: {
+    color: COLORS.white,
+    ...FONTS.body4,
+    textAlign: "center",
+  },
+  outputContainer: {
+    flex: 40,
+    backgroundColor: COLORS.purple,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  outputText: {
+    color: COLORS.white,
+    ...FONTS.largeTitle,
+    flexWrap: "wrap",
+    width: SIZES.width * 0.9,
+    textAlign: "center",
+  },
+});
+
+
+// First time: SignUp
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Modal,
+  Image,
+  TextInput,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
+  TouchableWithoutFeedback,
+  FlatList,
+} from "react-native";
+import { COLORS, FONTS, SIZES, icons, images } from "../../constants";
+import LinearGradient from "react-native-linear-gradient";
+import { useEffect, useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+import axios from "axios";
+import { Header, TextField, WaButton } from "../../components";
+
+export default function SignUp() {
+  const pointsTo = useNavigation();
+  const [showPassword, setShowPassword] = useState(false);
+
+  const [areas, setAreas] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState(null);
+
+  const [modalVisible, setModalVisible] = useState(false);
+
+  useEffect(() => {
+    const URL = "https://restcountries.com/v3.1/all";
+    const getCountryData = async () => {
+      try {
+        const response = await axios.get(URL);
+
+        let countryData = response.data.map((country) => {
+          return {
+            countryCode: country?.cca2,
+            countryName: country?.name?.common,
+            callingCode: `${country?.idd?.root}${country?.idd?.suffixes}`,
+            countryFlag: country?.flags?.png,
+          };
+        });
+        setAreas(countryData);
+        // let sortedCountry = countryData
+        //   .map(country => country.countryName)
+        //   .sort();
+        // console.log(sortedCountry);
+        // if (countryData.length > 0) {
+        //   let defaultData = countryData.filter(a => a.countryCode == 'IN');
+        //   // console.log(defaultData);
+        //   if (defaultData.length > 0) {
+        //     setSelectedCountry(defaultData[0]);
+        //     console.log(
+        //       selectedCountry.callingCode,
+        //       selectedCountry.countryFlag,
+        //     );
+        //   }
+        // }
+      } catch (error) {
+        console.log("No country data:", error);
+      }
+    };
+    getCountryData();
+  }, []);
+
+  // Sign Up Form
+  const SignForm = () => {
+    return (
+      <>
+        <View
+          style={{
+            marginTop: SIZES.padding * 3,
+            marginHorizontal: SIZES.padding * 3,
+          }}
+        >
+          <View style={{ marginTop: SIZES.padding * 3 }}>
+            <Text style={{ color: COLORS.lightGreen, ...FONTS.body4 }}>
+              Full Name
+            </Text>
+            <TextInput
+              style={{
+                marginVertical: SIZES.padding,
+                borderBottomColor: COLORS.white,
+                borderBottomWidth: 1,
+                height: 40,
+                color: COLORS.white,
+                ...FONTS.body3,
+              }}
+              placeholder="Enter Full Name"
+              placeholderTextColor={COLORS.white}
+              selectionColor={COLORS.white}
+            />
+          </View>
+          <View style={{ marginTop: SIZES.padding * 2 }}>
+            <Text style={{ color: COLORS.lightGreen, ...FONTS.body4 }}>
+              Phone Number
+            </Text>
+            <View style={{ flexDirection: "row" }}>
+              <TouchableOpacity
+                onPress={() => {
+                  setModalVisible(true);
+                }}
+                style={{
+                  width: 100,
+                  height: 50,
+                  marginHorizontal: 5,
+                  borderBottomColor: COLORS.white,
+                  borderBottomWidth: 1,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  paddingHorizontal: 4,
+                  ...FONTS.body2,
+                }}
+              >
+                <View style={{ justifyContent: "center" }}>
+                  <Image
+                    source={icons.down}
+                    style={{ width: 10, height: 10, tintColor: COLORS.white }}
+                  />
+                </View>
+                <View style={{ justifyContent: "center" }}>
+                  <Image
+                    source={{
+                      uri: selectedCountry
+                        ? selectedCountry.countryFlag
+                        : "https://flagcdn.com/w320/in.png",
+                    }}
+                    // source={{uri: 'https://flagcdn.com/w320/jo.png'}}
+                    resizeMode="contain"
+                    style={{ width: 30, height: 30 }}
+                  />
+                </View>
+                <View style={{ justifyContent: "center" }}>
+                  <Text style={{ color: COLORS.white, ...FONTS.body3 }}>
+                    {selectedCountry ? selectedCountry.callingCode : "+91"}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <TextInput
+                style={{
+                  flex: 1,
+                  marginVertical: SIZES.padding,
+                  borderBottomColor: COLORS.white,
+                  borderBottomWidth: 1,
+                  height: 40,
+                  color: COLORS.white,
+                  ...FONTS.body3,
+                }}
+                placeholder="Enter Phone Number"
+                placeholderTextColor={COLORS.white}
+                selectionColor={COLORS.white}
+              />
+            </View>
+          </View>
+          <View style={{ marginTop: SIZES.padding * 2 }}>
+            <Text style={{ color: COLORS.lightGreen, ...FONTS.body4 }}>
+              Password
+            </Text>
+            <TextInput
+              style={{
+                marginVertical: SIZES.padding,
+                borderBottomColor: COLORS.white,
+                borderBottomWidth: 1,
+                height: 40,
+                color: COLORS.white,
+                ...FONTS.body3,
+              }}
+              placeholder="Enter Password"
+              placeholderTextColor={COLORS.white}
+              selectionColor={COLORS.white}
+              secureTextEntry={showPassword}
+            />
+            <TouchableOpacity
+              onPress={() => setShowPassword(!showPassword)}
+              style={{
+                width: 10,
+                height: 10,
+                position: "absolute",
+                top: 40,
+                right: 20,
+              }}
+            >
+              <Image
+                source={showPassword ? icons.disable_eye : icons.eye}
+                resizeMode="contain"
+                style={{ width: 18, height: 20, tintColor: COLORS.white }}
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={{ marginTop: SIZES.padding * 3 }}>
+            <TouchableOpacity
+              onPress={() => pointsTo.navigate("HomeTabs")}
+              style={{
+                backgroundColor: COLORS.black,
+                padding: SIZES.padding,
+                borderRadius: SIZES.radius / 1.5,
+              }}
+            >
+              <Text
+                style={{
+                  color: COLORS.white,
+                  alignSelf: "center",
+                  ...FONTS.body2,
+                }}
+              >
+                SignUp
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </>
+    );
+  };
+  // Modal Country Selection
+  const RenderCountryOptions = () => {
+    const renderItem = ({ item }) => {
+      return (
+        <TouchableOpacity
+          style={{ padding: SIZES.padding, flexDirection: "row" }}
+          onPress={() => {
+            setSelectedCountry(item);
+            setModalVisible(false);
+          }}
+        >
+          <Image
+            source={{ uri: item.countryFlag }}
+            style={{
+              width: 30,
+              height: 30,
+              marginRight: 10,
+            }}
+          />
+          <Text style={{ ...FONTS.body4, color: COLORS.black }}>
+            {item.countryName}
+          </Text>
+        </TouchableOpacity>
+      );
+    };
+    return (
+      <>
+        <Modal animationType="slide" transparent={true} visible={modalVisible}>
+          <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+            <View
+              style={{
+                flex: 1,
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: "rgba(0,0,0,0.6)",
+              }}
+            >
+              <View
+                style={{
+                  height: 400,
+                  width: SIZES.width * 0.8,
+                  backgroundColor: COLORS.lightGreen,
+                  borderRadius: SIZES.radius,
+                }}
+              >
+                <FlatList
+                  data={areas}
+                  renderItem={renderItem}
+                  keyExtractor={(item) => item.countryCode}
+                  showsVerticalScrollIndicator={false}
+                  style={{
+                    padding: SIZES.padding * 2,
+                    marginBottom: SIZES.padding * 2,
+                  }}
+                />
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
+      </>
+    );
+  };
+  return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : null}
+      style={{ flex: 1 }}
+    >
+      <LinearGradient
+        style={{ flex: 1 }}
+        colors={[COLORS.lime, COLORS.emerald]}
+      >
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <Header backTo={"Login"} headerName={"Getting Onboard"} />
+          <SignForm />
+        </ScrollView>
+      </LinearGradient>
+      <RenderCountryOptions />
+    </KeyboardAvoidingView>
+  );
+}
